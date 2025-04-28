@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: student003 
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python chat_with_003.py 
+    plan: free
