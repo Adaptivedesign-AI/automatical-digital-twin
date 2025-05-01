@@ -2,7 +2,10 @@ from openai import OpenAI
 import gradio as gr
 import os
 
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+client = OpenAI(
+    api_key=os.environ["OPENROUTER_API_KEY"],  
+    base_url="https://openrouter.ai/api/v1"
+)
 
 # Student003's system prompt (you'll fill this with your specific details)
 system_prompt = """
@@ -298,9 +301,9 @@ def chat_with_student003(message, history):
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4",  
+            model="meta-llama/llama-3-70b-instruct",  # ✅ 模型名改成 LLaMA-3
             messages=messages,
-            temperature=0.7  
+            temperature=0.7
         )
         reply = response.choices[0].message.content.strip()
         return reply
@@ -308,17 +311,24 @@ def chat_with_student003(message, history):
         print("Error:", e)
         return "Sorry, I'm having trouble responding right now."
 
+# Gradio interface
+with gr.Blocks() as demo:
+    gr.Markdown("## Talk to Student003 🧑‍🎓")
+
+    chatbot = gr.Chatbot(label="Conversation", avatar_images=(None, student_avatar_url))
+    msg = gr.Textbox(placeholder="Type your message...")
+    clear = gr.Button("Clear")
+
+    def respond(message, chat_history):
+        bot_message = chat_with_student003(message, chat_history)
+        chat_history.append((message, bot_message))
+        return "", chat_history
+
+    msg.submit(respond, [msg, chatbot], [msg, chatbot])
+    clear.click(lambda: None, None, chatbot, queue=False)
+
+# Render deployment settings
 if __name__ == "__main__":
-    def simple_respond(message):
-        return chat_with_student003(message, [])
-
-    app = gr.Interface(
-        fn=simple_respond,
-        inputs=gr.Textbox(label="Your Message"),
-        outputs=gr.Textbox(label="Twin's Response"),
-        title="Talk to Student003 🧑‍🎓",
-        description="Ask anything! (For surveys, please respond with numbers 1–7 as instructed.)"
-    )
-
+    demo.queue(api_open=True).launch(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", 7860)))
     app.queue(api_open=True)
     app.launch(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", 7860)), share=True)
