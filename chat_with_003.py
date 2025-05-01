@@ -301,7 +301,7 @@ def chat_with_student003(message, history):
 
     try:
         response = client.chat.completions.create(
-            model="meta-llama/llama-3-70b-instruct",  # ✅ 模型名改成 LLaMA-3
+            model="mistralai/mistral-7b-instruct",
             messages=messages,
             temperature=0.7
         )
