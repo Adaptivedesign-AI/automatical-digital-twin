@@ -29,7 +29,7 @@ def chat_with_student003(message, history, selected_model):
 
     headers = {
         "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
-        "HTTP-Referer": "https://chat-with-003-openrouter.onrender.com",  # 可以换成你的 GitHub 链接
+        "HTTP-Referer": "https://chat-with-003-openrouter.onrender.com",
         "X-Title": "Digital-Twin-003",
         "Content-Type": "application/json"
     }
@@ -47,12 +47,19 @@ def chat_with_student003(message, history, selected_model):
             json=payload,
             timeout=60
         )
-        response.raise_for_status()
+
+        # 打印完整响应信息供调试
+        print(f"🔍 Model: {selected_model}")
+        print(f"🔢 Status: {response.status_code}")
+        print(f"📨 Response:\n{response.text}\n")
+
+        response.raise_for_status()  # 报错抛出异常
         result = response.json()
         return result["choices"][0]["message"]["content"].strip()
+
     except Exception as e:
         print("❌ OpenRouter Error:", e)
-        return "Sorry, I'm having trouble responding right now."
+        return f"Sorry, I'm having trouble with model {selected_model}."
 
 # ✅ 构建 Gradio 界面
 with gr.Blocks() as demo:
