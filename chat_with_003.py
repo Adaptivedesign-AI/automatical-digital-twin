@@ -48,19 +48,20 @@ def chat_with_student003(message, history, selected_model):
             timeout=60
         )
 
-        # 打印完整响应信息供调试
-        print(f"🔍 Model: {selected_model}")
-        print(f"🔢 Status: {response.status_code}")
-        print(f"📨 Response:\n{response.text}\n")
+        # ✅ 显示所有模型响应详情
+        print(f"\n🧪 MODEL: {selected_model}")
+        print(f"🔢 STATUS: {response.status_code}")
+        print(f"📨 RESPONSE TEXT:\n{response.text}\n")
 
-        response.raise_for_status()  # 报错抛出异常
+        response.raise_for_status()
         result = response.json()
+
         return result["choices"][0]["message"]["content"].strip()
 
     except Exception as e:
-        print("❌ OpenRouter Error:", e)
+        print("❌ Exception:", e)
         return f"Sorry, I'm having trouble with model {selected_model}."
-
+        
 # ✅ 构建 Gradio 界面
 with gr.Blocks() as demo:
     gr.Markdown("## 🧠 Talk to Student003 — A Digital Twin")
