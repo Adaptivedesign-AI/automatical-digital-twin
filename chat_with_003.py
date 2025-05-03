@@ -1,7 +1,6 @@
 import gradio as gr
 import os
 import requests
-import time
 
 # 读取系统提示词
 with open("student_prompt.txt", "r") as f:
@@ -9,8 +8,9 @@ with open("student_prompt.txt", "r") as f:
 
 student_avatar_url = "https://raw.githubusercontent.com/Adaptivedesign-AI/Digital-twin-003/main/image.png"
 
-# 固定使用单一模型
-model = "meta-llama/llama-3-8b-instruct"
+# Together.ai 模型标识
+model = "meta-llama/Llama-4-8b-chat-hf"
+api_base = "https://api.together.xyz/v1"  # ✅ 你也可以换成其他兼容 OpenAI 的 API 地址
 
 def chat_with_student003(message, history):
     messages = [{"role": "system", "content": system_prompt}]
@@ -22,25 +22,22 @@ def chat_with_student003(message, history):
     messages.append({"role": "user", "content": message})
     
     headers = {
-        "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
-        "HTTP-Referer": "https://chat-with-003-openrouter.onrender.com",
-        "X-Title": "Digital-Twin-003",
+        "Authorization": f"Bearer {os.environ['TOGETHER_API_KEY']}",
         "Content-Type": "application/json"
     }
     
-    # 简化负载，只包含必要参数
     payload = {
         "model": model,
         "messages": messages,
         "temperature": 0.7,
         "max_tokens": 800
     }
-    
+
     try:
         print(f"\n🧪 使用模型: {model}")
         
         response = requests.post(
-            "https://openrouter.ai/api/v1/chat/completions",
+            f"{api_base}/chat/completions",
             headers=headers,
             json=payload,
             timeout=60
@@ -68,7 +65,7 @@ def chat_with_student003(message, history):
         print(f"❌ 异常: {str(e)}")
         return f"发生错误: {str(e)}"
 
-# 简化 Gradio 界面 - 移除了模型选择
+# Gradio 界面
 with gr.Blocks() as demo:
     gr.Markdown("## 🧠 Talk to Student003 — A Digital Twin")
     
