@@ -2,15 +2,15 @@ import gradio as gr
 import os
 import requests
 
-# 读取系统提示词
+
 with open("student_prompt.txt", "r") as f:
     system_prompt = f.read().strip()
 
 student_avatar_url = "https://raw.githubusercontent.com/Adaptivedesign-AI/Digital-twin-003/main/image.png"
 
-# Together.ai 模型标识
+
 model="meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8"
-api_base = "https://api.together.xyz/v1"  # ✅ 你也可以换成其他兼容 OpenAI 的 API 地址
+api_base = "https://api.together.xyz/v1"  
 
 def chat_with_student003(message, history):
     messages = [{"role": "system", "content": system_prompt}]
@@ -65,7 +65,7 @@ def chat_with_student003(message, history):
         print(f"❌ 异常: {str(e)}")
         return f"发生错误: {str(e)}"
 
-# Gradio 界面
+
 with gr.Blocks() as demo:
     gr.Markdown("## 🧠 Talk to Student003 — A Digital Twin")
     
@@ -84,6 +84,6 @@ with gr.Blocks() as demo:
     msg.submit(respond, [msg, chatbot], [msg, chatbot])
     clear.click(lambda: [], None, chatbot, queue=False)
 
-# 启动服务器
+
 if __name__ == "__main__":
     demo.queue(api_open=True).launch(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", 7860)))
