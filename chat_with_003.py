@@ -9,7 +9,7 @@ with open("student_prompt.txt", "r") as f:
 student_avatar_url = "https://raw.githubusercontent.com/Adaptivedesign-AI/Digital-twin-003/main/image.png"
 
 # Together.ai 模型标识
-model = "meta-llama/Meta-Llama-4-8B-Instruct"
+model="meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8"
 api_base = "https://api.together.xyz/v1"  # ✅ 你也可以换成其他兼容 OpenAI 的 API 地址
 
 def chat_with_student003(message, history):
